@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_mbg01" default="compile.module.mbg01">
+  <dirname property="module.mbg01.basedir" file="${ant.file.module_mbg01}"/>
+  
+  <property name="module.jdk.home.mbg01" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.mbg01" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.mbg01" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.mbg01" value="-encoding UTF-8 -source 5 -target 1.5 ${compiler.args}"/>
+  
+  <property name="mbg01.output.dir" value="${module.mbg01.basedir}/target/classes"/>
+  <property name="mbg01.testoutput.dir" value="${module.mbg01.basedir}/target/test-classes"/>
+  
+  <path id="mbg01.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="mbg01.module.production.classpath">
+    <path refid="${module.jdk.classpath.mbg01}"/>
+    <path refid="library.maven:_mysql:mysql-connector-java:5.1.38.classpath"/>
+    <path refid="library.maven:_org.mybatis:mybatis:3.4.6.classpath"/>
+    <path refid="library.maven:_org.mybatis.generator:mybatis-generator-core:1.3.7.classpath"/>
+  </path>
+  
+  <path id="mbg01.runtime.production.module.classpath">
+    <pathelement location="${mbg01.output.dir}"/>
+    <path refid="library.maven:_mysql:mysql-connector-java:5.1.38.classpath"/>
+    <path refid="library.maven:_org.mybatis:mybatis:3.4.6.classpath"/>
+    <path refid="library.maven:_org.mybatis.generator:mybatis-generator-core:1.3.7.classpath"/>
+  </path>
+  
+  <path id="mbg01.module.classpath">
+    <path refid="${module.jdk.classpath.mbg01}"/>
+    <pathelement location="${mbg01.output.dir}"/>
+    <path refid="library.maven:_mysql:mysql-connector-java:5.1.38.classpath"/>
+    <path refid="library.maven:_org.mybatis:mybatis:3.4.6.classpath"/>
+    <path refid="library.maven:_org.mybatis.generator:mybatis-generator-core:1.3.7.classpath"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+  </path>
+  
+  <path id="mbg01.runtime.module.classpath">
+    <pathelement location="${mbg01.testoutput.dir}"/>
+    <pathelement location="${mbg01.output.dir}"/>
+    <path refid="library.maven:_mysql:mysql-connector-java:5.1.38.classpath"/>
+    <path refid="library.maven:_org.mybatis:mybatis:3.4.6.classpath"/>
+    <path refid="library.maven:_org.mybatis.generator:mybatis-generator-core:1.3.7.classpath"/>
+    <path refid="library.maven:_junit:junit:4.12.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.3.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.mbg01">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.mbg01">
+    <patternset refid="excluded.from.module.mbg01"/>
+  </patternset>
+  
+  <path id="mbg01.module.sourcepath">
+    <dirset dir="${module.mbg01.basedir}">
+      <include name="src/main/java"/>
+      <include name="src/main/resources"/>
+    </dirset>
+  </path>
+  
+  <path id="mbg01.module.test.sourcepath">
+    <dirset dir="${module.mbg01.basedir}">
+      <include name="src/test/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.mbg01" depends="compile.module.mbg01.production,compile.module.mbg01.tests" description="Compile module mbg01"/>
+  
+  <target name="compile.module.mbg01.production" depends="register.custom.compilers" description="Compile module mbg01; production classes">
+    <mkdir dir="${mbg01.output.dir}"/>
+    <javac2 destdir="${mbg01.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.mbg01}/javac">
+      <compilerarg line="${compiler.args.mbg01}"/>
+      <bootclasspath refid="mbg01.module.bootclasspath"/>
+      <classpath refid="mbg01.module.production.classpath"/>
+      <src refid="mbg01.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.mbg01"/>
+    </javac2>
+    
+    <copy todir="${mbg01.output.dir}">
+      <fileset dir="${module.mbg01.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.mbg01.basedir}/src/main/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.mbg01.tests" depends="register.custom.compilers,compile.module.mbg01.production" description="compile module mbg01; test classes" unless="skip.tests">
+    <mkdir dir="${mbg01.testoutput.dir}"/>
+    <javac2 destdir="${mbg01.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.mbg01}/javac">
+      <compilerarg line="${compiler.args.mbg01}"/>
+      <bootclasspath refid="mbg01.module.bootclasspath"/>
+      <classpath refid="mbg01.module.classpath"/>
+      <src refid="mbg01.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.mbg01"/>
+    </javac2>
+    
+    <copy todir="${mbg01.testoutput.dir}">
+      <fileset dir="${module.mbg01.basedir}/src/test/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.mbg01" description="cleanup module">
+    <delete dir="${mbg01.output.dir}"/>
+    <delete dir="${mbg01.testoutput.dir}"/>
+  </target>
+</project>
